@@ -53,8 +53,8 @@
             padding: 10px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.30);
             line-height: 15px;
-            height: 170px;
-            width: 130px;
+            height: 70px;
+            width: 150px;
         }
 
         .legend-key {
@@ -69,7 +69,7 @@
 <body>
 <style>
         .mapboxgl-popup {
-            max-width: 200px;
+            max-width: 150px;
             font: 14px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
             border-radius: 2%;
         }
@@ -77,7 +77,7 @@
 <nav id="menu"></nav>
 <div id='map'></div>
 <div class='map-overlay' id='legend'>
-    <h4 style='margin-top:8px'>Branch Type</h4>
+    <h4 style='margin-top:8px'>Bank Name</h4>
 </div>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiamVkbGViaSIsImEiOiJjanhhc3M4NnYwMmxsM3lyODlxYTFhOGRxIn0.746AmyW45uwRPeUy1PczOg';
@@ -101,8 +101,8 @@ map.on('load', function () {
     }
     
     // define layer names
-    var layers = ['None','LMI','MIN','LMI-MIN','<p style=font-style:italic;bottom:30px;font-size:9px>'+'*TD Bank is shaded in light gray while First Horizon is shaded in black.' +'</p>'];
-    var colors = ['#818390','#2FADE3','#FFC23A','#EB2F89'];
+    var layers = ['TD Bank','First Horizon Bank'];
+    var colors = ['#000000','#2FADE3'];
 
     // Round values to nearest first whole number and include thousand seperators.
     function decimalRound0(num) {
@@ -124,9 +124,19 @@ map.on('load', function () {
       var bank_name = "<h1 style=text-align:left;width:100%;font-size:18px>" + e.features[0].properties.bank_name + "</h1>"
       var address = "<p style=font-style:italic>" + e.features[0].properties.address + "<br>" + e.features[0].properties.city + ", " + e.features[0].properties.state_abbrv + " " + e.features[0].properties.zip + "</p>"
       var deposits = "<p>" + "Total Deposits:" + "<br>" + "$" + decimalRound0(e.features[0].properties.deposits) + "</p>"
+      var lmimin = e.features[0].properties.lmi_min
+      if (lmimin === 2) {
+        btype = "<p>" + 'Not in LMI or Majority-Minority Community' + "</p>"
+      } else if (lmimin === 3) {
+        btype = "<p>" + 'In LMI Community' + "</p>"
+      } else if (lmimin === 4) {
+        btype = "<p>" + 'In Majority-Minority Community' + "</p>"
+      } else if (lmimin === 5) {
+        btype = "<p>" + 'In both LMI and Majority-Minority Community' + "</p>"
+      } else { btype = null }
       new mapboxgl.Popup()
             .setLngLat(e.lngLat)
-            .setHTML(bank_name + address + deposits)
+            .setHTML(bank_name + address + deposits + btype)
             .addTo(map);
     });
     
