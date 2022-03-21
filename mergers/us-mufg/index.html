@@ -124,14 +124,15 @@ map.on('load', function () {
       var bank_name = "<h1 style=text-align:left;width:100%;font-size:18px>" + e.features[0].properties.bank_name + "</h1>"
       var address = "<p style=font-style:italic>" + e.features[0].properties.address + "<br>" + e.features[0].properties.city + ", " + e.features[0].properties.state_abbrv + " " + e.features[0].properties.zip + "</p>"
       var deposits = "<p>" + "Total Deposits:" + "<br>" + "$" + decimalRound0(e.features[0].properties.deposits_000s*1000) + "</p>"
-      var lmimin = e.features[0].properties.lmi_min
-      if (lmimin === 2) {
+      var min = e.features[0].properties.br_minority
+      var lmi = e.features[0].properties.br_lmi
+      if (min === 0 and lmi === 0) {
         btype = "<p>" + 'Not in LMI or Majority-Minority Community' + "</p>"
-      } else if (lmimin === 3) {
+      } else if (min === 0 and lmi === 1) {
         btype = "<p>" + 'In LMI Community' + "</p>"
-      } else if (lmimin === 4) {
+      } else if (min === 1 and lmi === 0) {
         btype = "<p>" + 'In Majority-Minority Community' + "</p>"
-      } else if (lmimin === 5) {
+      } else if (min === 1 and lmi === 1) {
         btype = "<p>" + 'In both LMI and Majority-Minority Community' + "</p>"
       } else { btype = null }
       new mapboxgl.Popup()
